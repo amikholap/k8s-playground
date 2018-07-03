@@ -31,9 +31,29 @@ spec:
     spec:
       containers:
         - name: default
-          image: docker.io/carabas/k8s-playground
+          image: docker.io/carabas/k8s-playground@sha256:380096e23406d93bde4629b2a595bee7fd2a78a5c987bbb2f5adbd5ddb31ad6c
+          resources:
+            requests:
+              cpu: 500m
           env:
             - name: PLAYGROUND_PORT
               value: "8000"
           ports:
             - containerPort: 8000
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gateway
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gateway
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 50
