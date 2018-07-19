@@ -221,6 +221,7 @@ spec:
             - --cloud-provider=aws
             - --skip-nodes-with-local-storage=false
             - --nodes=1:7:nodes.playground.k8s.local
+            - --scale-down-utilization-threshold=0.75
           env:
             - name: AWS_REGION
               value: us-east-1
