@@ -3,40 +3,22 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/amikholap/k8s-playground/src/util"
 	"log"
 	"math/big"
 	"math/rand"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
 )
 
 func main() {
 	rand.Seed(time.Now().Unix())
-	port := getEnvInt("PLAYGROUND_PORT", 8080)
+	port := util.GetEnvInt("PLAYGROUND_GATEWAY_PORT", 80)
 
 	log.Printf("starting server on port %d\n", port)
 
 	http.HandleFunc("/", handleRoot)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
-}
-
-func getEnvInt(name string, fallback int) int {
-	var value int
-	var err error
-
-	valueStr := os.Getenv(name)
-	if valueStr == "" {
-		value = fallback
-	} else {
-		value, err = strconv.Atoi(valueStr)
-		if err != nil {
-			log.Panic(err)
-		}
-	}
-
-	return value
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
