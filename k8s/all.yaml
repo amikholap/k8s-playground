@@ -45,6 +45,7 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/subnets: subnet-23f2922c,subnet-3b8c2d5c,subnet-b5d4238b
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:186546143089:certificate/0bd788f9-b14f-4150-aab8-9cc19d978336
 spec:
   rules:
   - host: gateway.example.com
