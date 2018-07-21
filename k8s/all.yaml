@@ -6,10 +6,9 @@ metadata:
     app: playground
     tier: gateway
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 80
-      targetPort: 8000
   selector:
     app: playground
 ---
@@ -31,15 +30,30 @@ spec:
     spec:
       containers:
         - name: default
-          image: docker.io/carabas/k8s-playground@sha256:380096e23406d93bde4629b2a595bee7fd2a78a5c987bbb2f5adbd5ddb31ad6c
+          image: docker.io/carabas/k8s-playground@sha256:bddadd057674fc0d5b5ce1b15e6757330257dc70664ad8f9024b3bf2b6f354f4
           resources:
             requests:
               cpu: 500m
-          env:
-            - name: PLAYGROUND_PORT
-              value: "8000"
           ports:
-            - containerPort: 8000
+            - containerPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gateway
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/subnets: subnet-23f2922c,subnet-3b8c2d5c,subnet-b5d4238b
+spec:
+  rules:
+  - host: gateway.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: gateway
+          servicePort: 80
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
